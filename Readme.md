@@ -42,4 +42,21 @@ ParkEase es un sistema administrativo de gestión de estacionamiento diseñado p
 * Mayor precisión en la gestión de registros.
 
 
-###
+### Tecnologias a utlizar
+Stack MERN:
+
+* Node.js
+* Mongodb
+* Express.js
+* React
+
+#### Diagrama de base de datos
+
+
+
+#### Figma (Wireframe iu/ux)
+
+https://www.figma.com/file/ykBeEhqq7coENuwHoqnRzQ/Untitled?type=design&node-id=0%3A1&mode=design&t=Y5Y41Y8UWwa7ftb0-1
+
+#### Documentacion API (Swagger)
+
