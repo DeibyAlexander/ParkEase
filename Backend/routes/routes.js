@@ -11,7 +11,55 @@ const nombrebase = 'Parking'
 
 //TODO -> CRUD collection the Usuarios -----------------------------------------------------------------------------------
 
+    /**
+     * @swagger
+     * components:
+     *  schemas:
+     *      Usuario:
+     *          type: object
+     *          properties:
+     *              nombre:
+     *                  type: string
+     *                  description: nombre de usuario
+     *              correo:
+     *                  type: string
+     *                  description: Correo del usuario
+     *              contraseña:
+     *                  type: string
+     *                  description: contraseña del usuario
+     *              telefono:
+     *                  type: integer
+     *                  description: numero del usuario
+     *          required:
+     *              - nombre
+     *              - correo
+     *              - contraseña
+     *              - telefono
+     *          example: 
+     *              nombre: Alan Kay
+     *              correo: alan@gmail.com
+     *              contraseña: 12345
+     *              telefono: 3123123
+     */
+
     //! GET
+
+     /**
+     * @swagger
+     * /parkease/getUsuarios:
+     *  get:
+     *      summary: Retornar todos los usuarios
+     *      tags: [Usuario]
+     *      responses:
+     *          200:
+     *              description: Todos los usuarios enontrados!
+     *              content: 
+     *                  application/json:
+     *                      schema:
+     *                          type: array
+     *                          items:
+     *                              $ref: '#/components/schemas/Usuario'
+     */
 
 router.get('/getUsuarios', async(req,res)=>{
 
@@ -37,6 +85,24 @@ router.get('/getUsuarios', async(req,res)=>{
 })
 
     //! POST
+
+    /**
+     * @swagger
+     * /parkease/postUsuario:
+     *  post:
+     *      summary: Create new User 
+     *      tags: [Usuario]
+     *      requestBody:
+     *          required: true 
+     *          content:
+     *              application/json:
+     *                  schema:
+     *                      type: object
+     *                      $ref: '#/components/schemas/Usuario'
+     *      responses:
+     *          200:
+     *              description: Nuevo usuario fue creado!
+     */
 
 router.post("/postUsuario", async(req,res)=>{
     
@@ -71,6 +137,27 @@ router.post("/postUsuario", async(req,res)=>{
 
     //! DELETE
 
+
+     /**
+     * @swagger
+     * /parkease/deleteUsuario/{id}:
+     *  delete:
+     *      summary: Eliminar un usuario
+     *      tags: [Usuario]
+     *      parameters:
+     *          - in: path
+     *            name: id
+     *            schema: 
+     *                type: string
+     *            required: true
+     *            description: el usuario id
+     *      responses:
+     *          200:
+     *              description: Usuario eliminado
+     *          404:
+     *              description: Usuario no encontrado
+     */
+
 router.delete("/deleteUsuario/:id", async(req,res)=>{
     
     const client = new MongoClient(base)
@@ -104,6 +191,34 @@ router.delete("/deleteUsuario/:id", async(req,res)=>{
 })
 
     //! UPDATE
+
+     /**
+     * @swagger
+     * /parkease/updateUsuario/{id}:
+     *  patch:
+     *      summary: Actualizar un usuario
+     *      tags: [Usuario]
+     *      parameters:
+     *          - in: path
+     *            name: id
+     *            schema: 
+     *                type: string
+     *            required: true
+     *            description: el usuario id
+     *      requestBody:
+     *          required: true 
+     *          content:
+     *              application/json:
+     *                  schema:
+     *                      type: object
+     *                      $ref: '#/components/schemas/Usuario'
+     *      responses:
+     *          200:
+     *              description: Usuario Actualizado
+     *          404:
+     *              description: Usuario no encontrado
+     */
+
 
 router.patch("/updateUsuario/:id", async(req,res)=>{
 
