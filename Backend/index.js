@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import routesBases from "./routes/routes.js"
 
 import swaggerUI from 'swagger-ui-express'
-import swaggerSpec from './Swagger.json'
+import swaggerSpec from './Swagger.json' assert {type :"json"}
 
 const app = express();
 
