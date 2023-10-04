@@ -25,7 +25,7 @@ ParkEase es un sistema administrativo de gestión de estacionamiento diseñado p
 1. ##### Diseño de la Base de Datos: 
     Diseñar una base de datos eficiente para almacenar información de vehículos, tarifas, espacios, registros de entrada/salida, y más.
 
-2. ##### Diseñar un figma:
+2. ##### Diseñar un Wireframe IU/UX:
     Diseñar un figma representativo para mostrar un plus de el diseño de la pagina al finalizar
 
 3. ##### API de Reservas: 
@@ -52,9 +52,9 @@ Stack MERN:
 
 #### Diagrama de base de datos
 
+<img src="./Screenshot from 2023-10-04 07-17-56.png">
 
-
-#### Figma (Wireframe iu/ux)
+#### Figma (Wireframe UI/UX)
 
 https://www.figma.com/file/ykBeEhqq7coENuwHoqnRzQ/Untitled?type=design&node-id=0%3A1&mode=design&t=Y5Y41Y8UWwa7ftb0-1
 
