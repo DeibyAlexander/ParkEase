@@ -727,7 +727,7 @@ router.patch("/updateReserva/:id", async(req,res)=>{
     }
 })
 
-//TODO -> CRUD collection the Reservas -----------------------------------------------------------------------------------
+//TODO -> CRUD collection the Vehiculos -----------------------------------------------------------------------------------
 
     //! GET
 
@@ -880,5 +880,609 @@ router.patch("/updateReserva/:id", async(req,res)=>{
     
         }
     })
+
+//TODO -> CRUD collection the Registro Entrada/Salida -----------------------------------------------------------------------------------
+
+    //! GET
+
+router.get('/getRegistrosES', async(req,res)=>{
+
+    const client = new MongoClient(base);
+
+    try {
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection("Registros_E_S");
+        const result = await collection.aggregate([
+            {
+                $lookup:{
+                    from: "Vehiculos",
+                    localField: "vehiculo_id",
+                    foreignField: "_id",
+                    as: "vehiculo_id"
+                }
+            },
+            {
+                $unwind: "$vehiculo_id"
+            },
+            {
+                $lookup:{
+                    from: "Espacios",
+                    localField: "espacio_id",
+                    foreignField: "_id",
+                    as: "espacio_id"
+                }
+            },
+            {
+                $unwind: "$espacio_id"
+            },
+            {
+                $lookup:{
+                    from: "Tarifas",
+                    localField: "tarifa_id",
+                    foreignField: "_id",
+                    as: "tarifa_id"
+                }
+            },
+            {
+                $unwind: "$tarifa_id"
+            }
+        ]).toArray()
+
+        res.json(result)
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+
+    }finally{
+        client.close()
+        console.log('Servidor Cerrado');
+
+    }
+})
+    
+    //! POST
+    
+router.post("/postRegistroES", async(req,res)=>{
+    
+    const client = new MongoClient(base)
+    try {
+        const {vehiculo_id, espacio_id, fecha_entrada, fecha_salida, tarifa_id, monto_pagado} = req.body;
+
+        const registroES = {
+            vehiculo_id: new ObjectId(vehiculo_id),
+            espacio_id: new ObjectId(espacio_id),
+            fecha_entrada: new Date(fecha_entrada),
+            fecha_salida : new Date(fecha_salida),
+            tarifa_id: new ObjectId(tarifa_id),
+            monto_pagado
+        };
+    
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Registros_E_S');
+        const result = await collection.insertOne(registroES)
+
+
+
+        res.json({
+            "message":"Enviado Correctamente",
+            result
+        })       
+    } catch (error) {
+        console.log(error);
+    }finally{
+        client.close()
+    }
+})
+
+    //! DELETE
+
+router.delete("/deleteRegistroES/:id", async(req,res)=>{
+    
+    const client = new MongoClient(base)
+    try {
+
+        const id = req.params.id
+        
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Registros_E_S');
+        const result = await collection.findOneAndDelete({_id : new ObjectId(id)})
+
+        if (!result.value) {
+            res.json({
+                "message": "Usuario eliminado correctamente",
+                result
+            });
+        } else if (result.value) {
+            res.status(404).json({ error: "Usuario no encontrado" });
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+
+    }finally{
+        client.close()
+        console.log('Servidor Cerrado');
+
+    }
+})
+
+    //! UPDATE
+
+router.patch("/updateRegistroES/:id", async(req,res)=>{
+
+    const client = new MongoClient(base)
+    try {
+
+        const id = req.params.id
+
+        const {vehiculo_id, espacio_id, fecha_entrada, fecha_salida, tarifa_id, monto_pagado} = req.body;
+
+        const registroES = {
+            vehiculo_id: new ObjectId(vehiculo_id),
+            espacio_id: new ObjectId(espacio_id),
+            fecha_entrada: new Date(fecha_entrada),
+            fecha_salida : new Date(fecha_salida),
+            tarifa_id: new ObjectId(tarifa_id),
+            monto_pagado
+        };
+        
+
+        
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Registros_E_S');
+        const result = await collection.findOneAndUpdate({_id: new ObjectId(id)},{$set: registroES})
+
+
+        if (!result.value) {
+            res.json({
+                "message": "Usuario actualizado correctamente",
+                result
+            });
+        } else {
+            res.status(404).json({ error: "Usuario no encontrado" });
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+
+    }finally{
+        client.close()
+        console.log('Servidor Cerrado');
+
+    }
+})
+
+//TODO -> CRUD collection the Registro Incidentes -----------------------------------------------------------------------------------
+
+    //! GET
+
+router.get('/getRegistrosInci', async(req,res)=>{
+
+    const client = new MongoClient(base);
+
+    try {
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection("Registro_Incidentes");
+        const result = await collection.find().toArray()
+
+        res.json(result)
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+
+    }finally{
+        client.close()
+        console.log('Servidor Cerrado');
+
+    }
+})
+    
+    //! POST
+    
+router.post("/postRegistroInci", async(req,res)=>{
+    
+    const client = new MongoClient(base)
+    try {
+        const {fecha, descripcion, tipo} = req.body;
+
+        const registroInci = {
+            fecha: new Date(fecha),
+            descripcion,
+            tipo
+        };
+    
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Registro_Incidentes');
+        const result = await collection.insertOne(registroInci)
+
+
+
+        res.json({
+            "message":"Enviado Correctamente",
+            result
+        })       
+    } catch (error) {
+        console.log(error);
+    }finally{
+        client.close()
+    }
+})
+
+    //! DELETE
+
+router.delete("/deleteRegistroInci/:id", async(req,res)=>{
+    
+    const client = new MongoClient(base)
+    try {
+
+        const id = req.params.id
+        
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Registro_Incidentes');
+        const result = await collection.findOneAndDelete({_id : new ObjectId(id)})
+
+        if (!result.value) {
+            res.json({
+                "message": "Usuario eliminado correctamente",
+                result
+            });
+        } else if (result.value) {
+            res.status(404).json({ error: "Usuario no encontrado" });
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+
+    }finally{
+        client.close()
+        console.log('Servidor Cerrado');
+
+    }
+})
+
+    //! UPDATE
+
+router.patch("/updateRegistroInci/:id", async(req,res)=>{
+
+    const client = new MongoClient(base)
+    try {
+
+        const id = req.params.id
+
+        const {fecha, descripcion, tipo} = req.body;
+
+        const registroInci = {
+            fecha: new Date(fecha),
+            descripcion,
+            tipo
+        };
+        
+
+        
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Registro_Incidentes');
+        const result = await collection.findOneAndUpdate({_id: new ObjectId(id)},{$set: registroInci})
+
+
+        if (!result.value) {
+            res.json({
+                "message": "Usuario actualizado correctamente",
+                result
+            });
+        } else {
+            res.status(404).json({ error: "Usuario no encontrado" });
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+
+    }finally{
+        client.close()
+        console.log('Servidor Cerrado');
+
+    }
+})
+
+
+//TODO -> CRUD collection the Resporte de ingresos -----------------------------------------------------------------------------------
+
+    //! GET
+
+router.get('/getReporteIngre', async(req,res)=>{
+
+    const client = new MongoClient(base);
+
+    try {
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection("Reporte_Ingresos");
+        const result = await collection.find().toArray()
+
+        res.json(result)
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+
+    }finally{
+        client.close()
+        console.log('Servidor Cerrado');
+
+    }
+})
+    
+    //! POST
+    
+router.post("/postReporteIngre", async(req,res)=>{
+    
+    const client = new MongoClient(base)
+    try {
+        const {fecha, monto} = req.body;
+
+        const reporteIngre = {
+            fecha: new Date(fecha),
+            monto,
+            
+        };
+    
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Reporte_Ingresos');
+        const result = await collection.insertOne(reporteIngre)
+
+
+
+        res.json({
+            "message":"Enviado Correctamente",
+            result
+        })       
+    } catch (error) {
+        console.log(error);
+    }finally{
+        client.close()
+    }
+})
+
+    //! DELETE
+
+router.delete("/deleteReporteIngre/:id", async(req,res)=>{
+    
+    const client = new MongoClient(base)
+    try {
+
+        const id = req.params.id
+        
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Reporte_Ingresos');
+        const result = await collection.findOneAndDelete({_id : new ObjectId(id)})
+
+        if (!result.value) {
+            res.json({
+                "message": "Usuario eliminado correctamente",
+                result
+            });
+        } else if (result.value) {
+            res.status(404).json({ error: "Usuario no encontrado" });
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+
+    }finally{
+        client.close()
+        console.log('Servidor Cerrado');
+
+    }
+})
+
+    //! UPDATE
+
+router.patch("/updateReporteIngre/:id", async(req,res)=>{
+
+    const client = new MongoClient(base)
+    try {
+
+        const id = req.params.id
+
+        const {fecha, monto} = req.body;
+
+        const reporteIngre = {
+            fecha: new Date(fecha),
+            monto
+            
+        };
+        
+
+        
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Reporte_Ingresos');
+        const result = await collection.findOneAndUpdate({_id: new ObjectId(id)},{$set: reporteIngre})
+
+
+        if (!result.value) {
+            res.json({
+                "message": "Usuario actualizado correctamente",
+                result
+            });
+        } else {
+            res.status(404).json({ error: "Usuario no encontrado" });
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+
+    }finally{
+        client.close()
+        console.log('Servidor Cerrado');
+
+    }
+})
+
+
+
+//TODO -> CRUD collection the Resporte de ingresos -----------------------------------------------------------------------------------
+
+    //! GET
+
+router.get('/getEmpleados', async(req,res)=>{
+
+    const client = new MongoClient(base);
+
+    try {
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection("Empleados");
+        const result = await collection.find().toArray()
+
+        res.json(result)
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+
+    }finally{
+        client.close()
+        console.log('Servidor Cerrado');
+
+    }
+})
+    
+    //! POST
+    
+router.post("/postEmpleados", async(req,res)=>{
+    
+    const client = new MongoClient(base)
+    try {
+        const {nombre, puesto, correo, telefono} = req.body;
+
+        const empleados = {
+            nombre,
+            puesto,
+            correo,
+            telefono
+            
+        };
+    
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Empleados');
+        const result = await collection.insertOne(empleados)
+
+
+
+        res.json({
+            "message":"Enviado Correctamente",
+            result
+        })       
+    } catch (error) {
+        console.log(error);
+    }finally{
+        client.close()
+    }
+})
+
+    //! DELETE
+
+router.delete("/deleteEmpleados/:id", async(req,res)=>{
+    
+    const client = new MongoClient(base)
+    try {
+
+        const id = req.params.id
+        
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Empleados');
+        const result = await collection.findOneAndDelete({_id : new ObjectId(id)})
+
+        if (!result.value) {
+            res.json({
+                "message": "Usuario eliminado correctamente",
+                result
+            });
+        } else if (result.value) {
+            res.status(404).json({ error: "Usuario no encontrado" });
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+
+    }finally{
+        client.close()
+        console.log('Servidor Cerrado');
+
+    }
+})
+
+    //! UPDATE
+
+router.patch("/updateEmpleados/:id", async(req,res)=>{
+
+    const client = new MongoClient(base)
+    try {
+
+        const id = req.params.id
+
+        const {nombre, puesto, correo, telefono} = req.body;
+
+        const empleados = {
+            nombre,
+            puesto,
+            correo,
+            telefono
+            
+        };
+        
+
+        
+        await client.connect();
+        const db = client.db(nombrebase);
+        const collection = db.collection('Empleados');
+        const result = await collection.findOneAndUpdate({_id: new ObjectId(id)},{$set: empleados})
+
+
+        if (!result.value) {
+            res.json({
+                "message": "Usuario actualizado correctamente",
+                result
+            });
+        } else {
+            res.status(404).json({ error: "Usuario no encontrado" });
+        }
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+
+    }finally{
+        client.close()
+        console.log('Servidor Cerrado');
+
+    }
+})
+
+
+
+
+
 
 export default router;
