@@ -1669,8 +1669,20 @@ router.get('/getRegistrosES', async(req,res)=>{
                     as: "tarifa_id"
                 }
             },
+      
             {
                 $unwind: "$tarifa_id"
+            },
+            {
+                $lookup:{
+                    from: "Usuarios",
+                    localField: "vehiculo_id.propietario_id",
+                    foreignField: "_id",
+                    as: "vehiculo_id.propietario_id"
+                }
+            },
+            {
+                $unwind: "$vehiculo_id.propietario_id"
             }
         ]).toArray()
 

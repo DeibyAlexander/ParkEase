@@ -52,11 +52,27 @@ Stack MERN:
 
 #### Diagrama de base de datos
 
-<img src="./Screenshot from 2023-10-04 07-17-56.png">
+<img src="./img/Screenshot from 2023-10-04 07-17-56.png">
 
 #### Figma (Wireframe UI/UX)
 
-https://www.figma.com/file/ykBeEhqq7coENuwHoqnRzQ/Untitled?type=design&node-id=0%3A1&mode=design&t=Y5Y41Y8UWwa7ftb0-1
+[Diseño en Figma](https://www.figma.com/file/ykBeEhqq7coENuwHoqnRzQ/Untitled?type=design&node-id=0%3A1&mode=design&t=Y5Y41Y8UWwa7ftb0-1)
+
+##### Desktop
+* ##### Wireframe UI
+<img src="./img/Screenshot from 2023-10-04 22-32-43.png">
+
+* ##### Wireframe UX
+<img src="./img/Screenshot from 2023-10-04 22-33-12.png">
+
+##### Dispositivo Movil
+* ##### Wireframe UI
+<img src="./img/Screenshot from 2023-10-04 22-32-59.png">
+
+* ##### Wireframe UX
+<img src="./img/Screenshot from 2023-10-04 22-33-23.png">
 
 #### Documentacion API (Swagger)
+
+[Documentacion de la API ParkEase](http://localhost:4466/api-docs/)
 
