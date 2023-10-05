@@ -1,22 +1,14 @@
-import './App.css'
-import Read from './components/Usuarios/read';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-
-
-
+import {Routes, Route, BrowserRouter} from 'react-router-dom'
+import ShowUsuarios from './components/ShowUsuarios'
 
 function App() {
   return (
-    <Router>
-      <div className='main'>
-        <h2 className='main-header'>Usuarios</h2>
-        <div style={{marginTop:20}}>
-          <Route exact path='/' component={Read}></Route>
-        </div>
-      </div>
-    </Router>
-
-  );
+    <BrowserRouter>
+      <Routes>
+          <Route path='/' element={<ShowUsuarios></ShowUsuarios>}></Route>
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App;
