@@ -7,8 +7,11 @@ import { show_alerta } from "../functions";
 
 const ShowUsuarios = ()=>{
     const url = 'http://localhost:4466/parkease/getUsuarios'
+    const urlpost = 'http://localhost:4466/parkease/postUsuario'
+ 
     const [usuarios, setUsuarios] = useState([])
-    const [id,setId] = useState('')
+    const [id,setId] = useState({})
+    const urlupdate = `http://localhost:4466/parkease/updateUsuario`
     const [nombre,setNombre] = useState('')
     const [correo,setCorreo] = useState('')
     const [contraseña,setContraseña] = useState('')
@@ -35,7 +38,7 @@ const ShowUsuarios = ()=>{
         getUsuarios()
     },[])
 
-    const openModal = (op, id, nombre, correo, contraseña, telefono) =>{
+    const openModal = (op, _id, nombre, correo, contraseña, telefono) =>{
         setId('')
         setNombre('')
         setCorreo('')
@@ -47,7 +50,7 @@ const ShowUsuarios = ()=>{
         }
         else if( op ===2){
             setTitle('Editar Producto')
-            setId(id)
+            setId(_id)
             setNombre(nombre)
             setCorreo(correo)
             setContraseña(contraseña)
@@ -75,19 +78,20 @@ const ShowUsuarios = ()=>{
         })
 
     }  */
+
     const enviarSolicitud = async (metodo, parametros) => {
         try {
-          const response = await fetch(url, {
+          const response = await fetch(urlpost, {
             method: metodo,
             headers: {
               'Content-Type': 'application/json', 
             },
             body: JSON.stringify(parametros),
-          });
-      
-      
+          });            
+
           const data = await response.json();
-      
+          console.log(data);
+
           const tipo = data[0];
           const msj = data[1];
           show_alerta(msj, tipo);
@@ -101,6 +105,34 @@ const ShowUsuarios = ()=>{
           show_alerta('Error en la solicitud');
         }
       }; 
+
+      const actualizar = async (metodo, parametros, _id) => {
+        try {
+         
+          const response = await fetch(`${urlupdate}/${_id}`, {
+            method: metodo,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(parametros),
+          });
+      
+          const data = await response.json();
+          console.log(data);
+      
+          const tipo = data[0];
+          const msj = data[1];
+          show_alerta(msj, tipo);
+      
+          if (tipo === 'success') {
+            document.getElementById('btnCerrar').click();
+            getUsuarios();
+          }
+        } catch (error) {
+          console.error('Error en la solicitud:', error);
+          show_alerta('Error en la solicitud');
+        }
+      };
       
 
     const validar = () =>{
@@ -127,6 +159,7 @@ const ShowUsuarios = ()=>{
                 metodo= 'PATCH'
             }
             enviarSolicitud(metodo, parametros)
+            actualizar(metodo, parametros)
         }
     }
 
