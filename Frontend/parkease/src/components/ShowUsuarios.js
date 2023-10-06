@@ -8,10 +8,11 @@ import { show_alerta } from "../functions";
 const ShowUsuarios = ()=>{
     const url = 'http://localhost:4466/parkease/getUsuarios'
     const urlpost = 'http://localhost:4466/parkease/postUsuario'
- 
+     const urlupdate = `http://localhost:4466/parkease/updateUsuario`
+    const urldelete = `http://localhost:4466/parkease/deleteUsuario`
     const [usuarios, setUsuarios] = useState([])
-    const [id,setId] = useState({})
-    const urlupdate = `http://localhost:4466/parkease/updateUsuario`
+    const [_id,setId] = useState({})
+
     const [nombre,setNombre] = useState('')
     const [correo,setCorreo] = useState('')
     const [contraseña,setContraseña] = useState('')
@@ -92,14 +93,22 @@ const ShowUsuarios = ()=>{
           const data = await response.json();
           console.log(data);
 
-          const tipo = data[0];
-          const msj = data[1];
-          show_alerta(msj, tipo);
+          const tipo = 'success';
+          
+          const msj = data.message;
+
+   
+          show_alerta(msj,tipo );
       
           if (tipo === 'success') {
             document.getElementById('btnCerrar').click();
             getUsuarios();
+/*             setTimeout(function () {
+                window.location.href = 'http://localhost:3000';
+              }, 2000); // Redirige después de 2 segundos (2000 milisegundos) */
           }
+
+          
         } catch (error) {
           console.error('Error en la solicitud:', error);
           show_alerta('Error en la solicitud');
@@ -163,6 +172,53 @@ const ShowUsuarios = ()=>{
         }
     }
 
+    const deleteUsuario = async (_id, nombre)=>{
+        const MySwal = wihtReactContent(Swal);
+        MySwal.fire({
+            title: `¿Seguro que quiere eliminar al usuario ${nombre}`,
+            icon: 'question',
+            text: 'No se podra dar marcha atras',
+            showCancelButton:true, confirmButtonText: 'Si, eliminar', cancelButtonText: 'Cancelar'
+        }).then( async (result)=>{
+            if(result.isConfirmed) {
+                
+                try {
+                    // Realiza la solicitud DELETE utilizando fetch
+                    const response = await fetch(`${urldelete}/${_id}`, {
+                      method: 'DELETE',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                    });
+            
+                    const data = await response.json();
+                    console.log(data);
+                    const tipo = 'success';
+            
+                    MySwal.fire({
+                        title: `Usuario eliminado`,
+                        icon: 'success',     
+                        timer: 1500
+                    })
+            
+                    if (tipo === 'success') {
+                        
+                        getUsuarios();
+            /*             setTimeout(function () {
+                            window.location.href = 'http://localhost:3000';
+                          }, 2000); // Redirige después de 2 segundos (2000 milisegundos) */
+                      }
+                  } catch (error) {
+                    console.error('Error en la solicitud:', error);
+                    show_alerta('Error en la solicitud');
+                  }
+            }else{
+                show_alerta('El usuario no fue eliminado','info')
+            }
+        })
+
+
+    }
 
     return(
         <div className="App">
@@ -180,7 +236,7 @@ const ShowUsuarios = ()=>{
 
                 </div>
                 <div className="row mt-3">
-                    <div className="col-12 col-lg-8 offset-0 offset-lg-12">
+                    <div className="col-12 col-lg-12 offset-0 offset-lg-14">
                         <div className="table-responsive">
                             <table className="table table-bordered">
                                 <thead>
@@ -194,18 +250,18 @@ const ShowUsuarios = ()=>{
                                 </thead>
                                 <tbody className="table-group-divider">
                                 {usuarios.map((usuario, i) => (
-                                    <tr key={usuario.id}>
-                                        <td>{i + 1}</td>
+                                    <tr key={usuario._id}>
+                                        <td>{usuario._id}</td>
                                         <td>{usuario.nombre}</td>
                                         <td>{usuario.correo}</td>
                                         <td>{usuario.contraseña}</td>
                                         <td>{usuario.telefono}</td>
                                         <td>
-                                        <button onClick={()=> openModal(2, usuario.id, usuario.nombre, usuario.correo, usuario.contraseña, usuario.telefono)}  className="btn btn-warning">
+                                        <button onClick={()=> openModal(2, usuario._id, usuario.nombre, usuario.correo, usuario.contraseña, usuario.telefono)}  className="btn btn-warning">
                                             <i className="fa-solid fa-edit" data-bs-toggle="modal" data-bs-target="#modalUsuarios"></i>
                                         </button>
                                         &nbsp;
-                                        <button className="btn btn-danger">
+                                        <button onClick={()=>deleteUsuario(usuario._id, usuario.nombre)} className="btn btn-danger">
                                             <i className="fa-solid fa-trash"></i>
                                         </button>
                                         </td>
