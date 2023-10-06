@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from "react";
-import axios from "axios";
 import Swal from 'sweetalert2'
 import wihtReactContent from 'sweetalert2-react-content'
 import { show_alerta } from "../functions";
+import Aside from "./Aside";
+import '../assets/css/aside.css'
 
 
 const ShowUsuarios = ()=>{
     const url = 'http://localhost:4466/parkease/getUsuarios'
     const urlpost = 'http://localhost:4466/parkease/postUsuario'
-     const urlupdate = `http://localhost:4466/parkease/updateUsuario`
+    const urlupdate = `http://localhost:4466/parkease/updateUsuario`
     const urldelete = `http://localhost:4466/parkease/deleteUsuario`
     const [usuarios, setUsuarios] = useState([])
     const [_id,setId] = useState({})
@@ -62,25 +63,8 @@ const ShowUsuarios = ()=>{
         },500)
     }
 
-/*      const enviarSolicitud = async(metodo, parametros)=>{
-        await axios({method:metodo, url:url, data:parametros}).then(function(respuesta){
-            var tipo = respuesta.data[0]
-            var msj = respuesta.data[1]
-            show_alerta(msj,tipo)
-            if (tipo === 'success') {
-                document.getElementById('btnCerrar').click()
-                getUsuarios()
-                
-            }
-        })
-        .catch(function(error){
-            console.log(error);
-            show_alerta('Error en la solicitud')
-        })
-
-    }  */
-
     const enviarSolicitud = async (metodo, parametros) => {
+        const MySwal = wihtReactContent(Swal);
         try {
           const response = await fetch(urlpost, {
             method: metodo,
@@ -95,18 +79,18 @@ const ShowUsuarios = ()=>{
 
           const tipo = 'success';
           
-          const msj = data.message;
+          MySwal.fire({
+            title: `Usuario Registrado`,
+            icon: 'success',     
+            timer: 1500
+            })
 
-   
-          show_alerta(msj,tipo );
-      
-          if (tipo === 'success') {
-            document.getElementById('btnCerrar').click();
-            getUsuarios();
-/*             setTimeout(function () {
-                window.location.href = 'http://localhost:3000';
-              }, 2000); // Redirige después de 2 segundos (2000 milisegundos) */
-          }
+            if (tipo === 'success') {     
+                getUsuarios();
+             /*    setTimeout(function(){
+                    window.location = 'http://localhost:3000/'
+                },1500) */
+            }
 
           
         } catch (error) {
@@ -114,34 +98,34 @@ const ShowUsuarios = ()=>{
           show_alerta('Error en la solicitud');
         }
       }; 
+        
+    const actualizar = async (metodo, parametros, _id ) => {
 
-      const actualizar = async (metodo, parametros, _id) => {
-        try {
-         
-          const response = await fetch(`${urlupdate}/${_id}`, {
-            method: metodo,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(parametros),
-          });
-      
-          const data = await response.json();
-          console.log(data);
-      
-          const tipo = data[0];
-          const msj = data[1];
-          show_alerta(msj, tipo);
-      
-          if (tipo === 'success') {
-            document.getElementById('btnCerrar').click();
-            getUsuarios();
-          }
-        } catch (error) {
-          console.error('Error en la solicitud:', error);
-          show_alerta('Error en la solicitud');
+    try {
+        
+        const response = await fetch(`${urlupdate}/${_id}`, {
+        method: metodo,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(parametros),
+        });
+    
+        const data = await response.json();
+        console.log(data);
+    
+        const tipo = data[0];
+        const msj = data[1];
+        show_alerta(msj, tipo);
+    
+        if (tipo === 'success') {
+        getUsuarios();
         }
-      };
+    } catch (error) {
+        console.error('Error en la solicitud:', error);
+        show_alerta('Error en la solicitud');
+    }
+    };
       
 
     const validar = () =>{
@@ -163,7 +147,7 @@ const ShowUsuarios = ()=>{
                 parametros = {nombre:nombre.trim(), correo:correo.trim(), contraseña:contraseña.trim(),telefono:telefono.trim()}
                 metodo= 'POST'
             }
-            else{
+            else if(operation ===2){
                 parametros = {nombre:nombre.trim(), correo:correo.trim(), contraseña:contraseña.trim(),telefono:telefono.trim()}
                 metodo= 'PATCH'
             }
@@ -201,12 +185,8 @@ const ShowUsuarios = ()=>{
                         timer: 1500
                     })
             
-                    if (tipo === 'success') {
-                        
+                    if (tipo === 'success') {     
                         getUsuarios();
-            /*             setTimeout(function () {
-                            window.location.href = 'http://localhost:3000';
-                          }, 2000); // Redirige después de 2 segundos (2000 milisegundos) */
                       }
                   } catch (error) {
                     console.error('Error en la solicitud:', error);
@@ -221,6 +201,8 @@ const ShowUsuarios = ()=>{
     }
 
     return(
+        <>
+        <Aside/>
         <div className="App">
             <div className="container-fluid">
                 <div className="row mt-3">
@@ -246,6 +228,7 @@ const ShowUsuarios = ()=>{
                                         <th>Correo</th>
                                         <th>Contraseña</th>
                                         <th>Telefono</th>
+                                        <th>#</th>
                                     </tr>
                                 </thead>
                                 <tbody className="table-group-divider">
@@ -320,6 +303,7 @@ const ShowUsuarios = ()=>{
             </div>
 
         </div>
+        </>
     )
 }
 
