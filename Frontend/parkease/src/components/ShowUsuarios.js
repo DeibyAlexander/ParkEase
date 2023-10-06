@@ -4,6 +4,7 @@ import wihtReactContent from 'sweetalert2-react-content'
 import { show_alerta } from "../functions";
 import Aside from "./Aside";
 import '../assets/css/aside.css'
+import '../assets/css/main.css'
 
 
 const ShowUsuarios = ()=>{
@@ -59,7 +60,7 @@ const ShowUsuarios = ()=>{
             setTelefono(telefono)
         }
         window.setTimeout(function(){
-            document.getElementById('nombre').focus()
+            document.getElementById('nombre')
         },500)
     }
 
@@ -76,7 +77,6 @@ const ShowUsuarios = ()=>{
 
           const data = await response.json();
           console.log(data);
-
           const tipo = 'success';
           
           MySwal.fire({
@@ -92,6 +92,8 @@ const ShowUsuarios = ()=>{
                 },1500) */
             }
 
+    
+
           
         } catch (error) {
           console.error('Error en la solicitud:', error);
@@ -101,30 +103,30 @@ const ShowUsuarios = ()=>{
         
     const actualizar = async (metodo, parametros, _id ) => {
 
-    try {
+        try {
+            
+            const response = await fetch(`${urlupdate}/${_id}`, {
+            method: metodo,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(parametros),
+            });
         
-        const response = await fetch(`${urlupdate}/${_id}`, {
-        method: metodo,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(parametros),
-        });
-    
-        const data = await response.json();
-        console.log(data);
-    
-        const tipo = data[0];
-        const msj = data[1];
-        show_alerta(msj, tipo);
-    
-        if (tipo === 'success') {
-        getUsuarios();
+            const data = await response.json();
+            console.log(data);
+        
+            const tipo = data[0];
+            const msj = data[1];
+            show_alerta(msj, tipo);
+        
+            if (tipo === 'success') {
+            getUsuarios();
+            }
+        } catch (error) {
+            console.error('Error en la solicitud:', error);
+            show_alerta('Error en la solicitud');
         }
-    } catch (error) {
-        console.error('Error en la solicitud:', error);
-        show_alerta('Error en la solicitud');
-    }
     };
       
 
@@ -146,13 +148,15 @@ const ShowUsuarios = ()=>{
             if(operation ===1 ){
                 parametros = {nombre:nombre.trim(), correo:correo.trim(), contraseña:contraseña.trim(),telefono:telefono.trim()}
                 metodo= 'POST'
+                enviarSolicitud(metodo, parametros)
             }
             else if(operation ===2){
                 parametros = {nombre:nombre.trim(), correo:correo.trim(), contraseña:contraseña.trim(),telefono:telefono.trim()}
                 metodo= 'PATCH'
+                actualizar(metodo, parametros)
             }
-            enviarSolicitud(metodo, parametros)
-            actualizar(metodo, parametros)
+            
+            
         }
     }
 
@@ -204,6 +208,7 @@ const ShowUsuarios = ()=>{
         <>
         <Aside/>
         <div className="App">
+            <h2 className="subtitulos">Clientes</h2>
             <div className="container-fluid">
                 <div className="row mt-3">
                     <div className="col-md-4 offset-4">
@@ -217,7 +222,8 @@ const ShowUsuarios = ()=>{
                     </div>
 
                 </div>
-                <div className="row mt-3">
+                
+                <div className="row mt-3 contenido-tabla">
                     <div className="col-12 col-lg-12 offset-0 offset-lg-14">
                         <div className="table-responsive">
                             <table className="table table-bordered">
@@ -254,12 +260,13 @@ const ShowUsuarios = ()=>{
                             </table>
 
                         </div>
-
+                        <h2 className="subtitulos">Clientes</h2>
                     </div>
-
+                   
                 </div>
-
+              
             </div>
+           
             <div id="modalUsuarios" className="modal fade" aria-hidden='true'>
                 <div className="modal-dialog">
                     <div className="modal-content">
@@ -299,8 +306,10 @@ const ShowUsuarios = ()=>{
                     </div>
 
                 </div>
-
+                
             </div>
+
+           
 
         </div>
         </>

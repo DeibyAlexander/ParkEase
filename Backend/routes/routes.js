@@ -108,26 +108,31 @@ router.post("/postUsuario", async(req,res)=>{
     
     const client = new MongoClient(base)
     try {
-        const {nombre, correo, contraseña, telefono} = req.body;
+         const {nombre, correo, contraseña, telefono} = req.body;
 
         const usuario = {
             nombre,
             correo,
             contraseña,
             telefono,
-        };
+        }; 
    
         await client.connect();
         const db = client.db(nombrebase);
         const collection = db.collection('Usuarios');
-        const result = await collection.insertOne(usuario)
+        const result = await collection.insertOne(usuario);
 
+        // Obtén el _id del documento insertado
+        const insertedId = result.insertedId;
 
+        // Consulta la base de datos para obtener los datos del usuario
+        const insertedUsuario = await collection.findOne({ _id: insertedId });
 
-        res.json({
-            "message":"Enviado Correctamente",
-            result
-        })       
+        
+
+        res.json(insertedUsuario, // Devuelve los datos insertados
+        );
+
     } catch (error) {
         console.log(error);
     }finally{
@@ -244,10 +249,10 @@ router.patch("/updateUsuario/:id", async(req,res)=>{
 
 
         if (!result.value) {
-            res.json({
-                "message": "Usuario actualizado correctamente",
+            res.json(
+                
                 result
-            });
+            );
         } else {
             res.status(404).json({ error: "Usuario no encontrado" });
         }

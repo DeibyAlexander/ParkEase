@@ -7,20 +7,21 @@ const Aside = () => {
     <div className='aside'>
  
 
-            <nav>
+            <div className='navbar'>
                 <div className='logo'>
                     <img src={Logo}></img>  
                 </div>
-                <hr className='raya'></hr>
-                <div>
-                    <a href="">Hola</a>
-                    <a href="">Hola</a>
-                    <a href="">Hola</a>
-                    <a href="">Hola</a>
+                <div className='links'>
+                    <a href="#" style={{ color: '#00ED4B' }}>Clientes</a>
+                    <a href="#">Servicios</a>
+                    <a href="#">Registros</a>
+                    <a href="#">Reportes</a>
                 </div>
-   
-                <a href="">Hola</a>
-            </nav>
+                <div className='footer'>
+                  <a href="">ParkEase</a>
+                </div>
+                
+            </div>
 
     </div>
   )
