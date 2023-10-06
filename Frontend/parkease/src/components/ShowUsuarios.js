@@ -260,7 +260,7 @@ const ShowUsuarios = ()=>{
                             </table>
 
                         </div>
-                        <h2 className="subtitulos">Clientes</h2>
+                        <h2 className="subtitulos">Clientes Frecuentes</h2>
                     </div>
                    
                 </div>
