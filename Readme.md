@@ -76,3 +76,36 @@ Stack MERN:
 
 [Documentacion de la API ParkEase](http://localhost:4466/api-docs/)
 
+#### Backend
+
+- Bajamos a la carpeta Backend
+
+        cd Backend
+
+- Instalamos las dependencias
+
+        npm i
+
+- Ahora inicializamos Servidor
+        
+        npm run start
+
+Con esto pondremos a funcionar el backend y todas sus funcionalidades consumineto la base de datos de MongoDb y una vez completada la inicializacion abrimos otra terminal para ingresar al front
+
+### Frontend.
+
+Una vez creada la nueva terminar dejando abierta la terminal en la que iniciamos el Backend, seguimos:
+
+- Bajamos a la carpeta Frontend en la nueva terminal y seguimos bajando hasta la carpeta parkease
+
+        cd Frontend
+        cd parkease
+
+- Instalamos dependencias
+
+        npm i
+
+- Ahora inicializamos nuestra app
+
+        npm start
+
