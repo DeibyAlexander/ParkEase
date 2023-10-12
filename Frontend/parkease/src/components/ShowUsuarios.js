@@ -6,6 +6,7 @@ import Aside from "./Aside";
 import '../assets/css/aside.css'
 import '../assets/css/main.css'
 
+
 import loadingImage from '../assets/img/VAyR.gif'; // Ruta a tu imagen de carga
  // Estilo CSS para la imagen de carga
 
@@ -294,6 +295,8 @@ const ShowUsuarios = ()=>{
 
                         </div>
                         <h2 className="subtitulos">Clientes Frecuentes</h2>
+     
+                       
                     </div>
                    
                 </div>
