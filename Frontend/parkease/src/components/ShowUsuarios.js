@@ -6,6 +6,8 @@ import Aside from "./Aside";
 import '../assets/css/aside.css'
 import '../assets/css/main.css'
 
+import loadingImage from '../assets/img/VAyR.gif'; // Ruta a tu imagen de carga
+ // Estilo CSS para la imagen de carga
 
 const ShowUsuarios = ()=>{
     const url = 'http://localhost:4466/parkease/getUsuarios'
@@ -22,8 +24,24 @@ const ShowUsuarios = ()=>{
     const [operation,setOperation] = useState(1)
     const [title, setTitle] = useState('')
 
+    const [isLoading, setLoading] = useState(true); // Agregar estado para el indicador de carga
 
 
+
+    useEffect(() => {
+        // Realiza la carga de datos aquí
+        getUsuarios()
+          .then(() => {
+            setLoading(false); // Una vez que los datos se cargan, establece isLoading en false
+          })
+          .catch((error) => {
+            console.error('Error en la solicitud:', error);
+            show_alerta('Error en la solicitud');
+            setLoading(false); // Asegúrate de cambiar el estado incluso en caso de error
+          });
+      }, []);
+
+      
     const getUsuarios = async () => {
         try {
           const respuesta = await fetch(url);
@@ -208,6 +226,18 @@ const ShowUsuarios = ()=>{
         <>
         <Aside/>
         <div className="App">
+        {isLoading ? (
+            <div className="cargando" >
+                <img src={loadingImage} style={{width: "100%"}} alt="Loading" className="loading-image" />        
+            </div>
+                
+            
+        ) : (
+            <>
+                    
+            
+            </>
+        )}
             <h2 className="subtitulos">Clientes</h2>
             <div className="container-fluid">
                 <div className="row mt-3">
@@ -238,24 +268,27 @@ const ShowUsuarios = ()=>{
                                     </tr>
                                 </thead>
                                 <tbody className="table-group-divider">
-                                {usuarios.map((usuario, i) => (
-                                    <tr key={usuario._id}>
-                                        <td>{usuario._id}</td>
-                                        <td>{usuario.nombre}</td>
-                                        <td>{usuario.correo}</td>
-                                        <td>{usuario.contraseña}</td>
-                                        <td>{usuario.telefono}</td>
-                                        <td>
-                                        <button onClick={()=> openModal(2, usuario._id, usuario.nombre, usuario.correo, usuario.contraseña, usuario.telefono)}  className="btn btn-warning">
-                                            <i className="fa-solid fa-edit" data-bs-toggle="modal" data-bs-target="#modalUsuarios"></i>
-                                        </button>
-                                        &nbsp;
-                                        <button onClick={()=>deleteUsuario(usuario._id, usuario.nombre)} className="btn btn-danger">
-                                            <i className="fa-solid fa-trash"></i>
-                                        </button>
-                                        </td>
-                                    </tr>
-                                    ))}
+                              
+                                 {/* Mostrar contenido una vez que isLoading sea falso */}
+                                 {usuarios.map((usuario, i) => (
+                                        <tr key={usuario._id}>
+                                            <td>{usuario._id}</td>
+                                            <td>{usuario.nombre}</td>
+                                            <td>{usuario.correo}</td>
+                                            <td>{usuario.contraseña}</td>
+                                            <td>{usuario.telefono}</td>
+                                            <td>
+                                            <button onClick={()=> openModal(2, usuario._id, usuario.nombre, usuario.correo, usuario.contraseña, usuario.telefono)}  className="btn btn-warning">
+                                                <i className="fa-solid fa-edit" data-bs-toggle="modal" data-bs-target="#modalUsuarios"></i>
+                                            </button>
+                                            &nbsp;
+                                            <button onClick={()=>deleteUsuario(usuario._id, usuario.nombre)} className="btn btn-danger">
+                                                <i className="fa-solid fa-trash"></i>
+                                            </button>
+                                            </td>
+                                        </tr>
+                                        ))}
+                                
                                 </tbody>
                             </table>
 
